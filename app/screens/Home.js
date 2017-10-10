@@ -30,9 +30,9 @@ class Home extends Component {
                     onPress={this.handlePressBaseCurrency}
                 />
                 <InputWithButton
+                    editable={false}
                     buttonText={TEMP_QUOTE_CURRENCY}
                     onPress={this.handlePressQuoteCurrency}
-                    editable={false}
                 />
             </Container>
 
