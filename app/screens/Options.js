@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PropTypes } from "react";
 import { ScrollView, StatusBar } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -8,8 +8,12 @@ const ICON_COLOR = "#868686";
 const ICON_SIZE = 23;
 
 class Options extends Component {
-  handleThemesPress = () => {
-    console.log("press themes");
+  static propTypes = {
+    navigation: PropTypes.object
+  };
+
+  handlePressThemes = () => {
+    this.props.navigation.navigate("Themes");
   };
 
   handleSitePress = () => {
@@ -22,7 +26,7 @@ class Options extends Component {
         <StatusBar translucent={false} barStyle="default" />
         <ListItem
           text="themes"
-          onPress={this.handleThemesPress}
+          onPress={this.handlePressThemes}
           customIcon={
             <Ionicons
               name="ios-arrow-forward"
