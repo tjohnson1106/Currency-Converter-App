@@ -11,7 +11,8 @@ const HomeStack = StackNavigator(
     Home: {
       screen: Home,
       navigationOptions: {
-        header: () => null
+        header: () => null,
+        headerTitle: "Home"
       }
     },
     Options: {
@@ -21,7 +22,10 @@ const HomeStack = StackNavigator(
       }
     },
     Themes: {
-      screen: Themes
+      screen: Themes,
+      navigationOptions: {
+        headerTitle: Themes
+      }
     }
   },
   {
@@ -29,26 +33,31 @@ const HomeStack = StackNavigator(
   }
 );
 
+const CurrencyListStack = StackNavigator({
+  CurrencyList: {
+    screen: CurrencyList,
+    navigationOptions: ({ navigation }) => ({
+      //accessing title which is a string and is either base or quote
+      headerTitle: navigation.state.params.title
+    })
+  }
+});
+
 export default StackNavigator(
   {
     Home: {
       screen: HomeStack
     },
     CurrencyList: {
-      screen: CurrencyList,
-      navigationOptions: ({ navigation }) => ({
-        //accessing title which is a string and is either base or quote
-        headerTitle: navigation.state.params.title
-      })
+      screen: CurrencyListStack
     }
-    //extra config variables
   },
+
   {
     mode: "modal",
-
+    headerMode: "none",
     cardStyle: {
       paddingTop: StatusBar.currentHeight
-    },
-    headerMode: "none"
+    }
   }
 );
