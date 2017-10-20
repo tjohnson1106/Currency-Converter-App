@@ -59,7 +59,7 @@ const initialState = {
 };
 
 const setConversions = (state, action) => {
-  let setConversions = {
+  let conversion = {
     isFetching: true,
     date: "",
     rates: {}
