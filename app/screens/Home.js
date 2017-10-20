@@ -11,34 +11,37 @@ import { Header } from "../components/Header";
 
 import { swapCurrency, changeCurrencyAmount } from "../actions/currencies";
 
-const TEMP_BASE_PRICE = "100";
-const TEMP_QUOTE_PRICE = "79.74";
-const TEMP_CONVERSION_RATE = 0.7974;
-const TEMP_CONVERSION_DATE = new Date();
-
 class Home extends Component {
   static propTypes = {
     navigation: PropTypes.object,
     dispatch: PropTypes.func,
     baseCurrency: PropTypes.string,
-    quoteCurrency: PropTypes.string
+    quoteCurrency: PropTypes.string,
+    amount: PropTypes.number,
+    conversionRate: PropTypes.number,
+    isFetching: PropTypes.bool,
+    lastConvertedDate: PropTypes.object
   };
 
   handlePressBaseCurrency = () => {
-    this.props.navigation.navigate("CurrencyList", { title: "Base Currency" });
+    this.props.navigation.navigate("CurrencyList", {
+      title: "Base Currency",
+      type: "base"
+    });
   };
 
   handlePressQuoteCurrency = () => {
-    this.props.navigation.navigate("CurrencyList", { title: "Quote Currency" });
+    this.props.navigation.navigate("CurrencyList", {
+      title: "Quote Currency",
+      type: "quote"
+    });
   };
 
   handleChangeText = text => {
-    // TODO: make this work this.props.dispatch
     this.props.dispatch(changeCurrencyAmount(text));
   };
 
   handleSwapCurrencies = () => {
-    // TODO: make this work this.props.dispatch
     this.props.dispatch(swapCurrency());
   };
 
@@ -47,6 +50,11 @@ class Home extends Component {
   };
 
   render() {
+    let quotePrice = (this.props.amount * this.props.conversionRate).toFixed(2);
+    if (this.props.isFetching) {
+      quotePrice = "...";
+    }
+
     return (
       <Container>
         <StatusBar translucent={false} barStyle="light-content" />
@@ -56,7 +64,7 @@ class Home extends Component {
           <InputWithButton
             buttonText={this.props.baseCurrency}
             onPress={this.handlePressBaseCurrency}
-            defaultValue={TEMP_BASE_PRICE}
+            defaultValue={this.props.amount.toString()}
             keyboardType="numeric"
             onChangeText={this.handleTextChange}
           />
@@ -64,13 +72,13 @@ class Home extends Component {
             editable={false}
             buttonText={this.props.quoteCurrency}
             onPress={this.handlePressQuoteCurrency}
-            value={TEMP_QUOTE_PRICE}
+            value={quotePrice}
           />
           <LastConverted
             base={this.props.baseCurrency}
             quote={this.props.quoteCurrency}
-            date={TEMP_CONVERSION_DATE}
-            conversionRate={TEMP_CONVERSION_RATE}
+            date={this.props.lastConvertedDate}
+            conversionRate={this.props.conversionRate}
           />
 
           <ClearButton
@@ -83,12 +91,21 @@ class Home extends Component {
   }
 }
 
+//add to props in rendered components, delete any static variables if necessary define in staticPropTypes
 const mapStateToProps = state => {
   const baseCurrency = state.currencies.baseCurrency;
   const quoteCurrency = state.currencies.quoteCurrency;
+  const conversionSelector = state.currencies.conversions[baseCurrency] || {};
+  const rates = conversionSelector.rates || {};
   return {
     baseCurrency,
-    quoteCurrency
+    quoteCurrency,
+    amount: state.currencies.amount,
+    conversionRate: rates[quoteCurrency] || 0,
+    isFetching: conversionSelector.isFetching,
+    lastConvertedDate: conversionSelector.date
+      ? new Date(conversionSelector.date)
+      : new Date()
   };
 };
 
