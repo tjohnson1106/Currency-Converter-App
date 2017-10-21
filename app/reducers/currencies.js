@@ -18,7 +18,7 @@ const initialState = {
   amount: 100,
   conversions: {
     USD: {
-      isFetching: true,
+      isFetching: false,
       base: "USD",
       date: "2017-05-31",
       rates: {
