@@ -1,4 +1,4 @@
-import { takeEvery } from "redux-saga/effects";
+import { takeEvery, select } from "redux-saga/effects";
 
 //1. Swap currency
 //2. Change base currency
@@ -10,9 +10,21 @@ import {
   GET_INITIAL_CONVERSION
 } from "../actions/currencies";
 
+const getLatestRate = currency =>
+  fetch(`http://api.fixer.io/latest?base=${currency}`);
+
+// const fetchLatestConversionRates = function*(action) {
+//   getLatestRate("USD")
+//     .then((res = res.json()))
+//     .then(res => console.log(res))
+//     .catch(err => console.log("err", err));
+//   yield;
+// };
 const fetchLatestConversionRates = function*(action) {
-  console.log("TODO: Update", action);
-  yield;
+  let currency = action.currency;
+  if (currency === undefined) {
+    currency = yield select(state => state.currencies.baseCurrency);
+  }
 };
 
 const rootSaga = function*() {
