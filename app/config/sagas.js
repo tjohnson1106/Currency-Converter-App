@@ -1,4 +1,4 @@
-import { takeEvery, select } from "redux-saga/effects";
+import { takeEvery, select, call, put } from "redux-saga/effects";
 
 //1. Swap currency
 //2. Change base currency
@@ -7,7 +7,9 @@ import { takeEvery, select } from "redux-saga/effects";
 import {
   SWAP_CURRENCY,
   CHANGE_BASE_CURRENCY,
-  GET_INITIAL_CONVERSION
+  GET_INITIAL_CONVERSION,
+  CONVERSION_ERROR,
+  CONVERSION_RESULT
 } from "../actions/currencies";
 
 const getLatestRate = currency =>
@@ -21,9 +23,21 @@ const getLatestRate = currency =>
 //   yield;
 // };
 const fetchLatestConversionRates = function*(action) {
-  let currency = action.currency;
-  if (currency === undefined) {
-    currency = yield select(state => state.currencies.baseCurrency);
+  try {
+    let currency = action.currency;
+    if (currency === undefined) {
+      currency = yield select(state => state.currencies.baseCurrency);
+    }
+    const response = yield call(getLatestRate, currency);
+    const result = response.json();
+
+    if (result.error) {
+      yield put({ type: CONVERSION_ERROR, error: result.error });
+    } else {
+      yield put({ type: CONVERSION_RESULT, result });
+    }
+  } catch (e) {
+    yield put({ type: CONVERSION_ERROR, error: e.message });
   }
 };
 
