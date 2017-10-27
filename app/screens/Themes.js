@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 
 import { ListItem, Separator } from "../components/List";
 import { changePrimaryColor } from "../actions/theme";
+import { Home } from "../screens/Home";
 
 const styles = EStyleSheet.create({
   $blue: "$primaryBlue",
@@ -18,6 +19,7 @@ class Themes extends Component {
     navigation: PropTypes.object,
     dispatch: PropTypes.func
   };
+
   handlePressTheme = color => {
     this.props.dispatch(changePrimaryColor(color));
     this.props.navigation.goBack();

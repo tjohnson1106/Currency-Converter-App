@@ -12,7 +12,7 @@ import {
   CONVERSION_RESULT
 } from "../actions/currencies";
 
-const getLatestRate = currency =>
+export const getLatestRate = currency =>
   fetch(`http://api.fixer.io/latest?base=${currency}`);
 
 // const fetchLatestConversionRates = function*(action) {
@@ -22,6 +22,7 @@ const getLatestRate = currency =>
 //     .catch(err => console.log("err", err));
 //   yield;
 // };
+
 const fetchLatestConversionRates = function*(action) {
   try {
     let currency = action.currency;
@@ -29,7 +30,7 @@ const fetchLatestConversionRates = function*(action) {
       currency = yield select(state => state.currencies.baseCurrency);
     }
     const response = yield call(getLatestRate, currency);
-    const result = response.json();
+    const result = yield response.json();
 
     if (result.error) {
       yield put({ type: CONVERSION_ERROR, error: result.error });
